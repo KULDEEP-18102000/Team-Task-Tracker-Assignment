@@ -7,11 +7,13 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 import authRoutes from './routes/auth.routes';
+import taskRoutes from './routes/task.routes';
 
 app.use(express.json());
 
 // Mount routes
 app.use('/api/auth', authRoutes);
+app.use('/api/tasks', taskRoutes);
 
 // Basic health check route
 app.get('/health', (req: Request, res: Response) => {
