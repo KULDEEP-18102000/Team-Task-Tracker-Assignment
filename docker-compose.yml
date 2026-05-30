@@ -4,6 +4,7 @@ services:
   postgres:
     image: postgres:15-alpine
     container_name: task_tracker_db
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -12,16 +13,34 @@ services:
       - '5433:5432'
     volumes:
       - pg_data:/var/lib/postgresql/data
-    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
-    container_name: task_tracker_redis
+    container_name: task_tracker_cache
+    restart: unless-stopped
     ports:
       - '6379:6379'
     volumes:
       - redis_data:/data
+
+  api:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: task_tracker_api
     restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      - PORT=3000
+      # Internal Docker network still connects to the native 5432 port of the postgres container
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/task_tracker?schema=public
+      - REDIS_URL=redis://redis:6379
+      - JWT_ACCESS_SECRET=your_access_secret_key_here
+      - JWT_REFRESH_SECRET=your_refresh_secret_key_here
+    depends_on:
+      - postgres
+      - redis
 
 volumes:
   pg_data:
