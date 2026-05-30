@@ -8,6 +8,7 @@ const port = process.env.PORT || 3000;
 
 import authRoutes from './routes/auth.routes';
 import taskRoutes from './routes/task.routes';
+import { connectRedis } from './utils/redis';
 
 app.use(express.json());
 
@@ -30,6 +31,8 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-app.listen(port, () => {
+
+app.listen(port, async () => {
+  await connectRedis();
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });
