@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  MEMBER
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Status {
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  DONE
+  BLOCKED
+}
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users     User[]
+  tasks     Task[]
+}
+
+model User {
+  id             String       @id @default(uuid())
+  email          String       @unique
+  password       String
+  role           Role         @default(MEMBER)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  tasks          Task[]       @relation("AssignedTasks")
+}
+
+model Task {
+  id             String       @id @default(uuid())
+  title          String
+  description    String?
+  priority       Priority     @default(MEDIUM)
+  status         Status       @default(TODO)
+  dueDate        DateTime?
+  
+  assigneeId     String?
+  assignee       User?        @relation("AssignedTasks", fields: [assigneeId], references: [id])
+  
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Indexes as requested in the assignment
+  @@index([status])
+  @@index([assigneeId])
+  @@index([dueDate])
+}
