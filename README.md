@@ -10,7 +10,7 @@ This project is fully containerized. You do not need to install Node, PostgreSQL
 2. **Environment Variables**: Create a `.env` file in the root directory (or use the provided defaults in `docker-compose.yml` for local testing).
 3. **Run the Application**:
    ```bash
-   docker-compose up --build
+   docker-compose up
    ```
 4. **View Documentation**: Once running, interactive API documentation is available at:
    [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
