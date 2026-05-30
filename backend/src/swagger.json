@@ -40,9 +40,7 @@
                 "properties": {
                   "email": { "type": "string" },
                   "password": { "type": "string" },
-                  "name": { "type": "string" },
-                  "role": { "type": "string", "enum": ["ADMIN", "MANAGER", "MEMBER"] },
-                  "organizationId": { "type": "string", "description": "Optional. Will create a new one if omitted." }
+                  "organizationName": { "type": "string", "description": "Name of your organization (creates a new one if it doesn't exist)" }
                 }
               }
             }
