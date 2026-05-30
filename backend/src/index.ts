@@ -6,7 +6,12 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+import authRoutes from './routes/auth.routes';
+
 app.use(express.json());
+
+// Mount routes
+app.use('/api/auth', authRoutes);
 
 // Basic health check route
 app.get('/health', (req: Request, res: Response) => {
