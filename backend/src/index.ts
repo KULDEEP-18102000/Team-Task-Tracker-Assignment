@@ -8,9 +8,14 @@ const port = process.env.PORT || 3000;
 
 import authRoutes from './routes/auth.routes';
 import taskRoutes from './routes/task.routes';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json';
 import { connectRedis } from './utils/redis';
 
 app.use(express.json());
+
+// Mount Swagger UI Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Mount routes
 app.use('/api/auth', authRoutes);
