@@ -11,8 +11,12 @@ import taskRoutes from './routes/task.routes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger.json';
 import { connectRedis } from './utils/redis';
+import { rateLimiter } from './middlewares/rateLimiter';
 
 app.use(express.json());
+
+// Apply Redis Rate Limiter globally to protect all endpoints
+app.use(rateLimiter);
 
 // Mount Swagger UI Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
