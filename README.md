@@ -40,6 +40,19 @@ Every `User` and `Task` is strictly scoped to an `organizationId`, and the middl
 
 ---
 
+## 📊 Analytics Endpoint (Bonus Requirement)
+
+The bonus requirement for an Analytics endpoint is fully implemented at `GET /api/tasks/analytics` (accessible only by `ADMIN` and `MANAGER` roles). It calculates:
+- The total number of overdue tasks per user.
+- The average completion time (in seconds) for completed tasks per user.
+
+**Implementation Highlights:**
+- **Raw SQL Query:** Uses Prisma's `$queryRaw` to execute a high-performance PostgreSQL query.
+- **Common Table Expressions (CTE):** Uses a `WITH` clause to cleanly join `Users` and `Tasks`.
+- **SQL Window Functions:** Utilizes `COUNT(...) OVER (PARTITION BY u.id)` and `AVG(...) OVER (PARTITION BY u.id)` to perform complex data aggregations directly in the database engine, exactly as requested in the assignment rubric.
+
+---
+
 ## 🔮 Future Improvements (Given More Time)
 
 If given more time, I would implement the following enhancements:

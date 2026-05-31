@@ -56,3 +56,12 @@ export const deleteTask = async (req: AuthRequest, res: Response): Promise<void>
     res.status(400).json({ status: 400, code: 'BAD_REQUEST', message: error.message });
   }
 };
+
+export const getAnalytics = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const analytics = await TaskService.getAnalytics(req.user!);
+    res.status(200).json({ status: 200, data: analytics });
+  } catch (error: any) {
+    res.status(400).json({ status: 400, code: 'BAD_REQUEST', message: error.message });
+  }
+};

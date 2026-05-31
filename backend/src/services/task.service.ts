@@ -174,4 +174,38 @@ export class TaskService {
     await prisma.task.delete({ where: { id: taskId } });
     await this.invalidateTaskCache(user.organizationId);
   }
+
+  static async getAnalytics(user: { role: string, organizationId: string }) {
+    if (user.role === 'MEMBER') {
+      throw new Error('Members cannot view organization analytics');
+    }
+
+    const result = await prisma.$queryRaw<any[]>`
+      WITH UserTaskDetails AS (
+        SELECT
+          u.id AS user_id,
+          u.name AS user_name,
+          u.email AS user_email,
+          t.id AS task_id,
+          t.status AS task_status,
+          t."dueDate" AS task_due_date,
+          t."createdAt" AS task_created_at,
+          t."updatedAt" AS task_updated_at,
+          COUNT(CASE WHEN t."dueDate" < NOW() AND t.status != 'DONE' THEN 1 END) OVER(PARTITION BY u.id) as overdue_count,
+          AVG(CASE WHEN t.status = 'DONE' THEN EXTRACT(EPOCH FROM (t."updatedAt" - t."createdAt")) END) OVER(PARTITION BY u.id) as avg_completion_seconds
+        FROM "User" u
+        LEFT JOIN "Task" t ON u.id = t."assigneeId"
+        WHERE u."organizationId" = ${user.organizationId}
+      )
+      SELECT DISTINCT
+        user_id AS "userId",
+        user_name AS "userName",
+        user_email AS "userEmail",
+        COALESCE(overdue_count, 0)::INT AS "overdueTasksCount",
+        COALESCE(avg_completion_seconds, 0)::DOUBLE PRECISION AS "averageCompletionTimeSeconds"
+      FROM UserTaskDetails;
+    `;
+
+    return result;
+  }
 }

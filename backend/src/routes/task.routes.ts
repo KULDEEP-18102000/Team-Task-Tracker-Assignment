@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createTask, listTasks, updateTask, deleteTask } from '../controllers/task.controller';
+import { createTask, listTasks, updateTask, deleteTask, getAnalytics } from '../controllers/task.controller';
 import { requireAuth, requireRole } from '../middlewares/auth.middleware';
 
 const router = Router();
@@ -11,6 +11,9 @@ router.use(requireAuth);
 router.post('/', createTask); 
 router.get('/', listTasks); 
 
+
+// Analytics endpoint (Only ADMIN or MANAGER)
+router.get('/analytics', requireRole(['ADMIN', 'MANAGER']), getAnalytics);
 
 // Anyone can update (Service layer strictly limits updates to assigned tasks & status transitions)
 router.patch('/:id', updateTask); 

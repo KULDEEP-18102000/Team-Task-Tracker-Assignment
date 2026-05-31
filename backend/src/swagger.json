@@ -139,6 +139,41 @@
         }
       }
     },
+    "/api/tasks/analytics": {
+      "get": {
+        "summary": "Get user performance analytics (Requires ADMIN or MANAGER role)",
+        "description": "Calculates total overdue tasks and average task completion time for each user in the organization using advanced SQL window functions and CTEs.",
+        "tags": ["Tasks"],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved analytics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "integer", "example": 200 },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "userId": { "type": "string", "format": "uuid" },
+                          "userName": { "type": "string" },
+                          "userEmail": { "type": "string" },
+                          "overdueTasksCount": { "type": "integer" },
+                          "averageCompletionTimeSeconds": { "type": "number", "description": "Average completion time in seconds" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/tasks/{id}": {
       "patch": {
         "summary": "Update a task status or details",
