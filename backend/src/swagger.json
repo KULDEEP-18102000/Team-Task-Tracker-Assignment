@@ -83,7 +83,9 @@
         "parameters": [
           { "name": "page", "in": "query", "schema": { "type": "integer" } },
           { "name": "limit", "in": "query", "schema": { "type": "integer" } },
-          { "name": "status", "in": "query", "schema": { "type": "string" } }
+          { "name": "status", "in": "query", "schema": { "type": "string" } },
+          { "name": "priority", "in": "query", "schema": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH"] } },
+          { "name": "assigneeId", "in": "query", "schema": { "type": "string", "format": "uuid" } }
         ],
         "responses": {
           "200": { "description": "List of tasks (Cached in Redis)" }
@@ -101,7 +103,9 @@
                 "properties": {
                   "title": { "type": "string" },
                   "description": { "type": "string" },
-                  "priority": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH"] }
+                  "priority": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH"] },
+                  "dueDate": { "type": "string", "format": "date-time", "description": "ISO 8601 date string" },
+                  "assigneeId": { "type": "string", "format": "uuid", "description": "UUID of the user to assign the task to" }
                 }
               }
             }
@@ -126,7 +130,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "status": { "type": "string", "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE", "BLOCKED"] }
+                  "title": { "type": "string" },
+                  "description": { "type": "string" },
+                  "priority": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH"] },
+                  "status": { "type": "string", "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE", "BLOCKED"] },
+                  "dueDate": { "type": "string", "format": "date-time" },
+                  "assigneeId": { "type": "string", "format": "uuid" }
                 }
               }
             }
