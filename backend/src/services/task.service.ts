@@ -45,8 +45,14 @@ export class TaskService {
   }
 
   static async createTask(data: any, user: { userId: string, role: string, organizationId: string }) {
-    if (data.assigneeId && data.assigneeId !== user.userId && user.role === 'MEMBER') {
-      throw new Error('Members can only assign tasks to themselves');
+    if (data.assigneeId) {
+      if (data.assigneeId !== user.userId && user.role === 'MEMBER') {
+        throw new Error('Members can only assign tasks to themselves');
+      }
+      const assignee = await prisma.user.findUnique({ where: { id: data.assigneeId } });
+      if (!assignee || assignee.organizationId !== user.organizationId) {
+        throw new Error('Assignee must belong to the same organization');
+      }
     }
 
     const task = await prisma.task.create({
@@ -129,8 +135,14 @@ export class TaskService {
       throw new Error('Members can only update tasks assigned to them');
     }
 
-    if (updateData.assigneeId && updateData.assigneeId !== task.assigneeId && user.role === 'MEMBER') {
-      throw new Error('Members cannot reassign tasks');
+    if (updateData.assigneeId) {
+      if (updateData.assigneeId !== task.assigneeId && user.role === 'MEMBER') {
+        throw new Error('Members cannot reassign tasks');
+      }
+      const assignee = await prisma.user.findUnique({ where: { id: updateData.assigneeId } });
+      if (!assignee || assignee.organizationId !== user.organizationId) {
+        throw new Error('Assignee must belong to the same organization');
+      }
     }
 
     if (updateData.status && updateData.status !== task.status) {
