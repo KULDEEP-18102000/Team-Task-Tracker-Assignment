@@ -6,13 +6,13 @@ import { z } from 'zod';
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const data = registerSchema.parse(req.body);
-    const user = await AuthService.register(data.email, data.password, data.organizationName);
+    const user = await AuthService.register(data.name, data.email, data.password, data.organizationName);
     const tokens = AuthService.generateTokens(user.id, user.role, user.organizationId);
     
     res.status(201).json({
       status: 201,
       message: 'User registered successfully',
-      data: { user: { id: user.id, email: user.email, role: user.role }, tokens }
+      data: { user: { id: user.id, name: user.name, email: user.email, role: user.role }, tokens }
     });
   } catch (error: any) {
     if (error instanceof z.ZodError) {

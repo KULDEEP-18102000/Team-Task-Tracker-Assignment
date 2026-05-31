@@ -60,15 +60,16 @@ export class TaskService {
     return task;
   }
 
-  static async listTasks(filters: any, user: { organizationId: string }) {
+  static async listTasks(filters: any, user: { userId: string, role: string, organizationId: string }) {
     const { page, limit, status, priority, assigneeId } = filters;
     
     // 1. Check Redis Cache First
     let cacheKey = '';
     if (redisClient.isOpen) {
       const version = await this.getCacheVersion(user.organizationId);
-      // Cache key includes the exact filters AND the organization's current cache version
-      cacheKey = `tasks:${user.organizationId}:v${version}:a_${assigneeId||'any'}:p${page}:l${limit}:s_${status||'any'}:pr_${priority||'any'}`;
+      // Cache key includes the exact filters, role, and the organization's current cache version
+      const cacheAssignee = user.role === 'MEMBER' ? user.userId : (assigneeId || 'any');
+      cacheKey = `tasks:${user.organizationId}:v${version}:a_${cacheAssignee}:p${page}:l${limit}:s_${status||'any'}:pr_${priority||'any'}`;
       
       const cachedData = await redisClient.get(cacheKey);
       if (cachedData) {
@@ -81,7 +82,13 @@ export class TaskService {
     const where: any = { organizationId: user.organizationId };
     if (status) where.status = status;
     if (priority) where.priority = priority;
-    if (assigneeId) where.assigneeId = assigneeId;
+    
+    // CORE RBAC REQUIREMENT: Members can only view their own tasks
+    if (user.role === 'MEMBER') {
+      where.assigneeId = user.userId;
+    } else if (assigneeId) {
+      where.assigneeId = assigneeId;
+    }
 
     const [tasks, total] = await Promise.all([
       prisma.task.findMany({

@@ -6,7 +6,7 @@ const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'secret';
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'refresh_secret';
 
 export class AuthService {
-  static async register(email: string, password: string, organizationName: string) {
+  static async register(name: string, email: string, password: string, organizationName: string) {
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) throw new Error('Email already in use');
 
@@ -25,6 +25,7 @@ export class AuthService {
 
     const user = await prisma.user.create({
       data: {
+        name,
         email,
         password: hashedPassword,
         organizationId: org.id,

@@ -38,6 +38,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "name": { "type": "string" },
                   "email": { "type": "string" },
                   "password": { "type": "string" },
                   "organizationName": { "type": "string", "description": "Name of your organization (creates a new one if it doesn't exist)" }
