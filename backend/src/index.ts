@@ -12,7 +12,9 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger.json';
 import { connectRedis } from './utils/redis';
 import { rateLimiter } from './middlewares/rateLimiter';
+import cors from 'cors';
 
+app.use(cors());
 app.use(express.json());
 
 // Apply Redis Rate Limiter globally to protect all endpoints

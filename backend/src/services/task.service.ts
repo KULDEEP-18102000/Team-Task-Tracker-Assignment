@@ -101,7 +101,12 @@ export class TaskService {
         where,
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
+        include: {
+          assignee: {
+            select: { name: true, email: true }
+          }
+        }
       }),
       prisma.task.count({ where })
     ]);

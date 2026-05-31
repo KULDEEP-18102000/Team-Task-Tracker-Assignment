@@ -42,6 +42,17 @@ services:
       - postgres
       - redis
 
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: task_tracker_frontend
+    restart: unless-stopped
+    ports:
+      - '80:80'
+    depends_on:
+      - api
+
 volumes:
   pg_data:
   redis_data:

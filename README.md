@@ -12,7 +12,9 @@ This project is fully containerized. You do not need to install Node, PostgreSQL
    ```bash
    docker-compose up
    ```
-4. **View Documentation**: Once running, interactive API documentation is available at:
+4. **View Frontend Application**: The React Task Board will be live at:
+   [http://localhost](http://localhost)
+5. **View API Documentation**: Interactive API documentation is available at:
    [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
 ---

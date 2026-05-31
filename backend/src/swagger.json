@@ -72,7 +72,36 @@
           }
         },
         "responses": {
-          "200": { "description": "Login successful. Returns accessToken and refreshToken." }
+          "200": {
+            "description": "Login successful. Returns accessToken, refreshToken, and user details.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "Login successful" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": { "type": "string" },
+                        "refreshToken": { "type": "string" },
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": { "type": "string" },
+                            "name": { "type": "string" },
+                            "email": { "type": "string" },
+                            "role": { "type": "string" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -111,7 +140,50 @@
           { "name": "assigneeId", "in": "query", "schema": { "type": "string", "format": "uuid" } }
         ],
         "responses": {
-          "200": { "description": "List of tasks (Cached in Redis)" }
+          "200": {
+            "description": "List of tasks (Cached in Redis)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "integer", "example": 200 },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string" },
+                          "title": { "type": "string" },
+                          "description": { "type": "string" },
+                          "priority": { "type": "string" },
+                          "status": { "type": "string" },
+                          "dueDate": { "type": "string", "format": "date-time" },
+                          "assigneeId": { "type": "string" },
+                          "assignee": {
+                            "type": "object",
+                            "properties": {
+                              "name": { "type": "string" },
+                              "email": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "total": { "type": "integer" },
+                        "page": { "type": "integer" },
+                        "limit": { "type": "integer" },
+                        "totalPages": { "type": "integer" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       },
       "post": {
