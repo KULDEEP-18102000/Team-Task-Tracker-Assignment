@@ -53,6 +53,13 @@ The bonus requirement for an Analytics endpoint is fully implemented at `GET /ap
 
 ---
 
+## ⚖️ Tradeoffs & Assumptions
+
+**Assumption: Project Entity Scoping**
+The assignment's role descriptions mentioned managing "projects", but the explicitly required Task Schema omitted any project relations (`projectId`). To deliver a highly stable, focused MVP and prioritize a solid, bug-free core, I intentionally scoped out the `Project` entity. Tasks are currently managed directly at the `Organization` level. Given more time, introducing a `Project` table to group tasks would be the immediate next architectural step.
+
+---
+
 ## 🔮 Future Improvements (Given More Time)
 
 If given more time, I would implement the following enhancements:
