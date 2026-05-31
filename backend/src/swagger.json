@@ -76,6 +76,29 @@
         }
       }
     },
+    "/api/auth/refresh": {
+      "post": {
+        "summary": "Refresh access token",
+        "tags": ["Auth"],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Token refreshed successfully. Returns new accessToken and refreshToken." }
+        }
+      }
+    },
     "/api/tasks": {
       "get": {
         "summary": "List all tasks within your organization",
